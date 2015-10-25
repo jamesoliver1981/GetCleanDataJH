@@ -49,15 +49,19 @@ sum(check1-check2)
 finalpart2<- finalpart1[-c(39)]
 headers<- names(finalpart2)
 headers<-gsub("-"," ",headers)
+headers<-gsub("BodyBody","Body",headers)
+
 colnames(finalpart2)<-headers
 finalpart2<-rename(finalpart2, Subject = V1)
 
+#check for multiple row entries or observations
+#concatenate to one vector then check length against number of rows
+checkrows<- c(finalpart2,sep="")
+checkrow2<-do.call(paste,checkrows)
+length(unique(checkrow2))= nrow(finalpart2)
+
 #creating a summary table by subject & Activity
 output<- group_by(finalpart2,Subject,Activity)
-output2<- summarise_each(output2,funs(mean))
+output2<- summarise_each(output,funs(mean))
 output2
 
-library(reshape2)
-output<-melt(finalpart2,id=c("Subject","Activity"),measure.vars=finalpart2[,5:83])
-
-names(all$V1)<-c("Subject")
